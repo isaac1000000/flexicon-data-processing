@@ -1,4 +1,4 @@
 # flexicon-data-processing
-A python script to generate data for the lexicon webapp.
+The SQL and Python scripts I used to create the flexicon webapp's database
 
 All data taken from the wikimedia dumps at https://dumps.wikimedia.org/. 
