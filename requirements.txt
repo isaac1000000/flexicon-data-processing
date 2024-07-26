@@ -1,0 +1,4 @@
+progress==1.6
+psycopg2==2.9.9
+python-dotenv==1.0.1
+Requests==2.32.3

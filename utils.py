@@ -7,8 +7,19 @@ class InvalidSourceException(Exception):
 	pass
 
 def wordToIntId(word):
-	# Word ids are stored in the database as 8-byte (truncated) md5 hashes.
-	# Postgres auto-generates the id, but it might be useful to have a way
-	# To retrieve a word with the key
+	"""Replicates the database's default string to id hash function.
+
+	Uses md5 hash on the word then truncates to 64 bits to fit the
+	Postgres BIGINT type size convention. Collisions are possible but
+	rare, so particularly nasty bugs might be related.
+
+	Args:
+		word - the word to be converted to an id
+	Returns:
+		An integer value representing the word's unique hashed id
+	"""
 	bytesobj = md5(word.encode()).digest()
-	return int.from_bytes(bytesobj[:8], byteorder="big")
+	return int.from_bytes(bytesobj[:8], byteorder="big", signed=True)
+
+if __name__ == "__main__":
+	print(wordToIntId("invisible"))

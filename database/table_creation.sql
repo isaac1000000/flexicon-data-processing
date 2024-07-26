@@ -20,7 +20,7 @@ CREATE TABLE rels (
 	instances BIGINT NOT NULL DEFAULT 1,
 	PRIMARY KEY (baseId, targetId)
 );
-GRANT SELECT, INSERT, UPDATE, DELETE ON words TO processing;
+GRANT SELECT, INSERT, UPDATE, DELETE ON rels TO processing;
 
 CREATE OR REPLACE FUNCTION frequency(targetId BIGINT, maxCount BIGINT)
 RETURNS NUMERIC AS '
@@ -73,9 +73,13 @@ CREATE OR REPLACE VIEW relView AS (
 		w2.word AS target,
 		w2.definition AS targetDefinition,
 		frequency(rels.targetId, (SELECT max FROM maxCount)),
-		strength(rels.instances, (SELECT max FROM groupMaxCount))
-	FROM rels 
+		strength(rels.instances, (SELECT max FROM groupMaxCount WHERE groupmaxcount.baseid = rels.baseid)) 
+	FROM rels
 		JOIN words w1 ON rels.baseId = w1.id
 		JOIN words w2 ON rels.targetId = w2.id
 	ORDER BY rels.baseId DESC
 );
+
+CREATE INDEX baseWordIdx ON rels (baseId);
+
+SELECT * FROM relView;
