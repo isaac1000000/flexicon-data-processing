@@ -91,7 +91,7 @@ def read_text(source_title, source_text_ids, loading_bar):
 		source_text_ids - a list containing the ids of words to be parsed from the text. 
 		loading_bar - the progress bar used by parse_articles
 	"""
-	loading_bar.suffix += ": " + source_title
+	loading_bar.suffix = ": " + source_title
 	loading_bar.suffix = loading_bar.suffix[:60]
 
 	# SQL command to increment a word's instances count. Postgres automatically
