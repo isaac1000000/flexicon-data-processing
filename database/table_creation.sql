@@ -73,13 +73,11 @@ CREATE OR REPLACE VIEW relView AS (
 		w2.word AS target,
 		w2.definition AS targetDefinition,
 		frequency(rels.targetId, (SELECT max FROM maxCount)),
-		strength(rels.instances, (SELECT max FROM groupMaxCount WHERE groupmaxcount.baseid = rels.baseid)) 
+		strength(rels.instances, (SELECT max FROM groupMaxCount WHERE groupmaxcount.baseid = rels.baseid)),
+		rels.instances
 	FROM rels
 		JOIN words w1 ON rels.baseId = w1.id
 		JOIN words w2 ON rels.targetId = w2.id
-	ORDER BY rels.baseId DESC
 );
-
-CREATE INDEX baseWordIdx ON rels (baseId);
 
 SELECT * FROM relView;
