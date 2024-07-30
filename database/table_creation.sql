@@ -79,5 +79,6 @@ CREATE OR REPLACE VIEW relView AS (
 		JOIN words w1 ON rels.baseId = w1.id
 		JOIN words w2 ON rels.targetId = w2.id
 );
-
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO api;
+	
 SELECT * FROM relView;
