@@ -7,6 +7,8 @@ WITH maxCount AS (
 UPDATE words
 SET frequency = frequency(id, (SELECT max FROM maxCount));
 
+CREATE INDEX idFrequencyIndex ON words(id, frequency DESC);
+
 SELECT baseId, max(instances) INTO TEMPORARY TABLE groupMaxCount
 FROM rels
 GROUP BY baseId;
@@ -14,7 +16,7 @@ GROUP BY baseId;
 CREATE INDEX ididx ON groupMaxCount (baseId);
 
 CREATE TABLE rels2 AS
-SELECT *, strength(instances, (SELECT max FROM groupMaxCount WHERE baseId=rels.baseId)) FROM rels;
+SELECT *, strength(instances, (SELECT max FROM groupMaxCount WHERE baseId=rels.baseId))::NUMERIC(8, 7) FROM rels;
 
 DROP TABLE rels;
 

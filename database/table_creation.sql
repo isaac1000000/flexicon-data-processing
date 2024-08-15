@@ -22,6 +22,20 @@ CREATE TABLE rels (
 );
 GRANT SELECT, INSERT, UPDATE, DELETE ON rels TO processing;
 
+CREATE TABLE decks (
+	id BIGSERIAL PRIMARY KEY,
+	type varchar(10) NOT NULL,
+	name varchar(50),
+	ext varchar(10),
+	size int,
+	createdAt date,
+	minFrequency NUMERIC(3,2),
+	maxFrequency NUMERIC(3,2),
+	minStrength NUMERIC(3,2),
+	maxStrength NUMERIC(3,2)
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON decks TO api;
+
 CREATE OR REPLACE FUNCTION frequency(targetId BIGINT, maxCount BIGINT)
 RETURNS NUMERIC AS '
 DECLARE targetCount BIGINT;
@@ -50,35 +64,5 @@ BEGIN
 END;
 ' LANGUAGE plpgsql STABLE;
 
-CREATE OR REPLACE VIEW wordView AS (
-	WITH maxCount AS (
-		SELECT MAX(words.instances) as max
-		FROM words
-	)
-	SELECT *, frequency(id, (SELECT max FROM maxCount))
-	FROM words
-);
-CREATE OR REPLACE VIEW relView AS (
-	WITH maxCount AS (
-		SELECT MAX(words.instances) as max
-		FROM words
-	), groupMaxCount AS (
-		SELECT rels.baseId, MAX(rels.instances) AS max
-		FROM rels
-		GROUP BY rels.baseId
-	)
-	SELECT rels.baseId,
-		w1.word AS base,
-		rels.targetId,
-		w2.word AS target,
-		w2.definition AS targetDefinition,
-		frequency(rels.targetId, (SELECT max FROM maxCount)),
-		strength(rels.instances, (SELECT max FROM groupMaxCount WHERE groupmaxcount.baseid = rels.baseid)),
-		rels.instances
-	FROM rels
-		JOIN words w1 ON rels.baseId = w1.id
-		JOIN words w2 ON rels.targetId = w2.id
-);
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO api;
-	
-SELECT * FROM relView;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO api;
