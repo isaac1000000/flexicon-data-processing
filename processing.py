@@ -14,7 +14,7 @@ You can download the necessary wordlist at https://github.com/dwyl/english-words
 https://dumps.wikimedia.org/. You'll need to find a way to un-bz2 them yourself.
 
 You can view the source code for the entire project at my GitHub 
-https://github.com/isaac1000000/
+https://github.com/stars/isaac1000000/lists/flexicon
 """
 
 
@@ -56,7 +56,7 @@ def create_word_table(source):
 			plaintext and separated by linebreaks.
 	"""
 	print("Parsing words at source " + source)
-	load_words_bar = IncrementalBar("Loading words into database...", max=370104)
+	load_words_bar = IncrementalBar("Loading words into database...", max=WORD_COUNT)
 	with open(source, "r") as fread:
 		words = [word.rstrip("\n") for word in fread]
 
